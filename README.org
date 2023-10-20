@@ -1,4 +1,4 @@
 #+title: Lösungen der Übungsaufgaben des Kurses statistische Methoden der Datenanalyse B
 
 Alle Skripte sollten in der Conda- bzw. Mamba-[[./environment_smd.yml][Umgebung]] erstellt werden und ausführbar sein.
-Jupyter-Notebooks sind grundsätzlich verboten, da sie leider unglaublich Krebs im Umgang sind.
+Jupyter-Notebooks sind grundsätzlich verboten, da sie leider unglaublich Krebs im Umgang sind🤬.
