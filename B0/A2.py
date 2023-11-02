@@ -50,3 +50,4 @@ print(f"Mean Squared Error: {mse}")
 # Stellen Sie die erstellten Daten und die Vorhersagen des Regressors in einem dreidimensonalen Plot und mehreren
 # 2-dimensionalen Projektionen dar um die Vorhersage mit der Wahrheit zu vergleichen. Geben Sie außerdem den mean
 # squared error der Vorhersage zu den wahren Werten an.
+
