@@ -2,8 +2,11 @@
 :ID:       6ce0ec8e-9fbb-455a-b7f7-1214389861ce
 :END:
 #+title: Exercise 4
+#+author: Christopher Breitfeld, Linus Bölte, Henry Krämerkämper
 #+startup: latexpreview inlineimages
 #+options: toc:nil
+@@latex:\setlength{\parindent}{0pt}@@
+
 
 In a lab experiment the following values are measured:
 
@@ -30,10 +33,10 @@ and write down the design matrix *A*.
 #+attr_html: :width 800px
 [[attachment:_20231113_113805Bildschirmfoto vom 2023-11-13 11-37-55.png]]
 
-#+begin_src python :results output :session
+#+begin_src python :results output :session :exports both
 import numpy as np
-
-psi = np.radians(np.arange(0, 331, 30)) # muss damit numpy nicht weint in rad umgewandelt werden
+# muss damit numpy nicht weint in rad umgewandelt werden
+psi = np.radians(np.arange(0, 331, 30))
 measurement = np.array([-0.032, 0.010, 0.057, 0.068, 0.076, 0.080, 0.031, 0.005, -0.041, -0.090, -0.088, -0.074])
 measurement_error = 0.011
 
@@ -64,7 +67,7 @@ Calculate the solution vector $\hat{a}$ for the parameters using the method of t
 
 The solution vector $\hat{a}$ can be calculated as $\hat{a} = (\bf{A}^{T} \cdot \bf{A})^{-1} \bf{A}^{T} y$:
 
-#+begin_src python :results output :session
+#+begin_src python :results output :session :exports both
 a = np.linalg.inv(A.T @ A) @ A.T @ measurement
 print(f"a = {a}")
 #+end_src
@@ -80,7 +83,7 @@ Calculate the covariance matrix $\bf{V}[\hat{a}]$ as well as the errors of $a_1$
 
 The covariance matrix of $\hat{a}$ is given by $\bf{V}[\hat{a}] = \sigma^2 (\bf{A}^{T} \cdot \bf{A})^{-1}$, where $\sigma$ denotes the measurement error.
 
-#+begin_src python :results output :session
+#+begin_src python :results output :session :exports both
 V = measurement_error**2 * np.linalg.inv (A.T @ A)
 print(f"V = {V}")
 #+end_src
@@ -91,7 +94,7 @@ print(f"V = {V}")
 
 The error of $a_1$ and $a_2$ can be calculated via the diagonal elements of the covariance matrix:
 
-#+begin_src python :results output :session
+#+begin_src python :results output :session :exports both
 a_error = np.sqrt(np.diag(V))
 print(f"a_error ={a_error}")
 #+end_src
@@ -123,9 +126,11 @@ Calculate the Jacobian matrix of $f(\vec{x}) = \begin{bmatrix} A_0 \\ \delta \en
 #+attr_html: :width 700px
 [[attachment:_20231113_133423Bildschirmfoto vom 2023-11-13 13-34-03.png]]
 
-#+begin_src python :results output :session
-J = np.array([[(-a[0]/(np.sqrt(a[1]**2 - a[0]**2))), (a[1]/(np.sqrt(a[1]**2 - a[0]**2)))],
-              [(a[1]/(a[0]**2 + a[1]**2)),           (-a[0]/(a[0]**2 + a[1]**2))]])
+#+begin_src python :results output :session :exports both
+J = np.array([[(-a[0]/(np.sqrt(a[1]**2 - a[0]**2))),
+               (a[1]/(np.sqrt(a[1]**2 - a[0]**2)))],
+              [(a[1]/(a[0]**2 + a[1]**2)),
+               (-a[0]/(a[0]**2 + a[1]**2))]])
 
 V_2 = J @ V @ J.T
 errors = np.sqrt(np.diag(V_2))
