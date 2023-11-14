@@ -1,0 +1,16 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
+*.py[cod]
+*.egg
+build
+htmlcov
+
+B2/A4.aux
+B2/A4.bbl
+B2/A4.bcf
+B2/A4.log
+B2/A4.out
+B2/A4.run.xml
