@@ -1,0 +1,170 @@
+% Created 2023-11-14 Di 20:14
+% Intended LaTeX compiler: lualatex
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{Christopher Breitfeld, Linus Bölte, Henry Krämerkämper}
+\date{\today}
+\title{Exercise 4}
+\hypersetup{
+ pdfauthor={Christopher Breitfeld, Linus Bölte, Henry Krämerkämper},
+ pdftitle={Exercise 4},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.1 (Org mode 9.7)}, 
+ pdflang={English}}
+\usepackage{biblatex}
+
+\begin{document}
+
+\maketitle
+\setlength{\parindent}{0pt}
+
+
+In a lab experiment the following values are measured:
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{/home/henry/Arbeitsmappe/Org/.attach/6c/e0ec8e-9fbb-455a-b7f7-1214389861ce/_20231113_113154asymmetrie.png}
+\end{center}
+
+
+The asymmetry values have a measurement value of \(\pm0.011\). The theory says that the
+asymmetry is described by an ansatz of the form
+
+\begin{equation*}
+   f(\psi) = A_{0} \cos{\psi + \delta}.
+\end{equation*}
+\section{a}
+\label{sec:org1e5cb15}
+Start with the ansatz
+
+\begin{equation*}
+   f(\psi) = a_{1} f_{1}(\psi) + a_{2} f_{2} (\psi) = a_{1} \cos(\psi) + a_{2} \sin{(\psi)}
+\end{equation*}
+
+and write down the design matrix \textbf{A}.
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{/home/henry/Arbeitsmappe/Org/.attach/6c/e0ec8e-9fbb-455a-b7f7-1214389861ce/_20231113_113805Bildschirmfoto vom 2023-11-13 11-37-55.png}
+\end{center}
+
+\begin{verbatim}
+import numpy as np
+# muss damit numpy nicht weint in rad umgewandelt werden
+psi = np.radians(np.arange(0, 331, 30))
+measurement = np.array([-0.032, 0.010, 0.057, 0.068, 0.076, 0.080, 0.031, 0.005, -0.041, -0.090, -0.088, -0.074])
+measurement_error = 0.011
+
+A = np.column_stack([np.cos(psi), np.sin(psi)])
+print(f"A = {A}")
+\end{verbatim}
+
+\begin{verbatim}
+A = [[ 1.00000000e+00  0.00000000e+00]
+ [ 8.66025404e-01  5.00000000e-01]
+ [ 5.00000000e-01  8.66025404e-01]
+ [ 6.12323400e-17  1.00000000e+00]
+ [-5.00000000e-01  8.66025404e-01]
+ [-8.66025404e-01  5.00000000e-01]
+ [-1.00000000e+00  1.22464680e-16]
+ [-8.66025404e-01 -5.00000000e-01]
+ [-5.00000000e-01 -8.66025404e-01]
+ [-1.83697020e-16 -1.00000000e+00]
+ [ 5.00000000e-01 -8.66025404e-01]
+ [ 8.66025404e-01 -5.00000000e-01]]
+\end{verbatim}
+\section{b}
+\label{sec:org9f258e7}
+
+Calculate the solution vector \(\hat{a}\) for the parameters using the method of the least squares.
+
+The solution vector \(\hat{a}\) can be calculated as \(\hat{a} = (\bf{A}^{T} \cdot \bf{A})^{-1} \bf{A}^{T} y\):
+
+\begin{verbatim}
+a = np.linalg.inv(A.T @ A) @ A.T @ measurement
+print(f"a = {a}")
+\end{verbatim}
+
+\begin{verbatim}
+a = [-0.0375063   0.07739978]
+\end{verbatim}
+\section{c}
+\label{sec:org929eb75}
+
+Calculate the covariance matrix \(\bf{V}[\hat{a}]\) as well as the errors of \(a_1\) and \(a_2\) and the correlation coefficient.
+
+The covariance matrix of \(\hat{a}\) is given by \(\bf{V}[\hat{a}] = \sigma^2 (\bf{A}^{T} \cdot \bf{A})^{-1}\), where \(\sigma\) denotes the measurement error.
+
+\begin{verbatim}
+V = measurement_error**2 * np.linalg.inv (A.T @ A)
+print(f"V = {V}")
+\end{verbatim}
+
+\begin{verbatim}
+V = [[ 2.01666667e-05 -1.31944981e-21]
+ [-1.31944981e-21  2.01666667e-05]]
+\end{verbatim}
+
+
+The error of \(a_1\) and \(a_2\) can be calculated via the diagonal elements of the covariance matrix:
+
+\begin{verbatim}
+a_error = np.sqrt(np.diag(V))
+print(f"a_error ={a_error}")
+\end{verbatim}
+
+\begin{verbatim}
+a_error =[0.00449073 0.00449073]
+\end{verbatim}
+\section{d}
+\label{sec:org68fb914}
+
+Calculate \(A_0\) and \(\delta\), their error and the correlation of \(a_1\) and \(a_2\).
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{/home/henry/Arbeitsmappe/Org/.attach/6c/e0ec8e-9fbb-455a-b7f7-1214389861ce/_20231113_125723Bildschirmfoto vom 2023-11-13 12-56-57.png}
+\end{center}
+
+\begin{verbatim}
+A_0 = a[0] * np.sqrt((a[1]**2 / a[0]**2) -1)
+delta = np.arctan(-a[1]/a[0])
+print(f"A_0 = {A_0}")
+print(f"delta = {delta}")
+\end{verbatim}
+
+The error of a solution vector \(\vec{y} = f(\vec{x})\) is can be computed by using \(\bf{V}[\vec{y}] = \bf{J} \cdot \bf{V}[\vec{x}] \cdot \bf{J}^{T}\).
+Calculate the Jacobian matrix of \(f(\vec{x}) = \begin{bmatrix} A_0 \\ \delta \end{bmatrix}\) :
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{/home/henry/Arbeitsmappe/Org/.attach/6c/e0ec8e-9fbb-455a-b7f7-1214389861ce/_20231113_133423Bildschirmfoto vom 2023-11-13 13-34-03.png}
+\end{center}
+
+\begin{verbatim}
+J = np.array([[(-a[0]/(np.sqrt(a[1]**2 - a[0]**2))),
+               (a[1]/(np.sqrt(a[1]**2 - a[0]**2)))],
+              [(a[1]/(a[0]**2 + a[1]**2)),
+               (-a[0]/(a[0]**2 + a[1]**2))]])
+
+V_2 = J @ V @ J.T
+errors = np.sqrt(np.diag(V_2))
+# correlation_coefficient = V_2[1,0] / V_2[0,0]
+correlation_coefficient = V_2[1,0] / errors[0]**2
+
+print(f"Fehler von A_0: {errors[0]}")
+print(f"Fehler von delta: {errors[1]}")
+print(f"Korrelationskoeffizient:{correlation_coefficient}")
+\end{verbatim}
+
+\begin{verbatim}
+Fehler von A_0: 0.005704736193232627
+Fehler von delta: 0.05221269485613977
+Korrelationskoeffizient:7.183441097416744
+\end{verbatim}
+\end{document}
